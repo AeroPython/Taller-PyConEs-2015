@@ -15,6 +15,7 @@ def weighted_choice_sub(weights):
 
 
 
+            
 generate_random_binary_list = lambda n: [random.randint(0,1) for b in range(1,n+1)]
 
 
@@ -42,11 +43,8 @@ def generate_genome (dict_genes):
 
 
 def calculate_traits (individual, dict_genes):
-    '''
-    This function must decipher the genome and return the traits of the individual.
-    Normally, the genome contains binary numerical values for the different traits.
-    This funcion translates the genome of an individual to numbers in the decimal system
-    '''
+    #This function must decipher the genome and return the traits of the individual.
+    #Normally, the genome contains binary numerical values for the different traits.
     
     dict_traits = {}
     index = 0
@@ -63,7 +61,13 @@ def calculate_traits (individual, dict_genes):
 def immigration (society, target_population, dict_genes):
     
     while len(society) < target_population:
-        society.append ( Individual (generate_genome (dict_genes)))
+        
+        new_individual = Individual (generate_genome (dict_genes))
+        calculate_traits (new_individual, dict_genes)
+        calculate_performances (new_individual)
+        calculate_fitness (new_individual)
+        
+        society.append (new_individual)
 
 
 
@@ -75,12 +79,12 @@ def crossover (society, reproduction_rate, mutation_rate):
     fitness_list = [individual.fitness for individual in society]
     
     #We sort the individuals in the society in descending order of fitness.   
-    society = [x for (y, x) in sorted(zip(fitness_list, society), key=lambda x: x[0], reverse=True)] 
+    society_sorted = [x for (y, x) in sorted(zip(fitness_list, society), key=lambda x: x[0], reverse=True)] 
     
     #We then create a list of relative probabilities in descending order, 
     #so that the fittest individual in the society has N times more chances to reproduce than the least fit,
     #where N is the number of individuals in the society.
-    probability = [i for i in reversed(range(1,len(society)+1))]
+    probability = [i for i in reversed(range(1,len(society_sorted)+1))]
     
     #We create a list of weights with the probabilities of non-mutation and mutation
     mutation = [1 - mutation_rate, mutation_rate]    
@@ -89,7 +93,7 @@ def crossover (society, reproduction_rate, mutation_rate):
     for i in range (int(len(society) * reproduction_rate)):
         
         #We select two parents randomly, using the list of probabilities in "probability".
-        father, mother = society[weighted_choice_sub(probability)], society[weighted_choice_sub(probability)]
+        father, mother = society_sorted[weighted_choice_sub(probability)], society_sorted[weighted_choice_sub(probability)]
         
         #We randomly select two cutting points for the genome.
         a, b = random.randrange(0, len(father.genome)), random.randrange(0, len(father.genome))
@@ -106,9 +110,11 @@ def crossover (society, reproduction_rate, mutation_rate):
         mutant_child_genome = [abs(n[i] -  child_genome[i]) for i in range(len(child_genome))]
         
         #We finally append the newborn individual to the society
-        society.append(Individual(mutant_child_genome))
-        
-    return (society)
+        newborn = Individual(mutant_child_genome)
+        calculate_traits (newborn, dict_genes)
+        calculate_performances (newborn)
+        calculate_fitness (newborn)
+        society.append(newborn)        
 
 
 
