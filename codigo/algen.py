@@ -50,7 +50,8 @@ def calculate_traits (individual, dict_genes):
     index = 0
     
     for trait in dict_genes:
-        dict_traits[trait] = int(''.join(str(bit) for bit in individual.genome[index : index+dict_genes[trait]]), 2)
+        step = 12 / (int(dict_genes[trait]*'1',2))
+        dict_traits[trait] = step*int(''.join(str(bit) for bit in individual.genome[index : index+dict_genes[trait]]), 2)
         index += dict_genes[trait]
         
     individual.traits = dict_traits
@@ -122,9 +123,11 @@ def tournament(society, target_population):
     
     while len(society) > target_population:
         
-        index1, index2 = random.randrange(0, len(society)), random.randrange(0, len(society))
-        
-        if society[index1].fitness > society[index2].fitness:
-            society.pop(index2)
-        else:
-            society.pop(index1)
+        #index1, index2 = random.randrange(0, len(society)), random.randrange(0, len(society))
+        #if society[index1].fitness > society[index2].fitness:
+        #    society.pop(index2)
+        #else:
+        #    society.pop(index1)
+                
+        fitness_list = [individual.fitness for individual in society]
+        society.pop(fitness_list.index(min(fitness_list)))
