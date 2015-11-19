@@ -17,7 +17,13 @@ También usa la librería Matplotlib en las funciones que dibujan resultados."""
 
 import numpy as np
 import matplotlib.pyplot as plt
-import laberinto.algen as ag
+try:
+    import laberinto.algen as ag
+except:
+    try:
+        import Ejercicios.Laberinto.laberinto.algen as ag
+    except:
+        print('Problema al cargar el módulo')
 
 #Primero vamos a definir los dos tipos de objeto que necesitamos: 
 class Map():
@@ -240,7 +246,7 @@ def calculate_fitness(individual):
     max_steps = individual.mapa.max_steps
     endx = path[-1,1]
     victory = max_steps + 1 - len(path) # >0 si ha llegado al final, mayor cuanto más corto sea el camino
-    individual.fitness = endx * 4 -  2 * wall_count - 3 * u_turn_count - 0.01 * poison + victory * 5
+    individual.fitness = endx * 4 -  2 * wall_count - 3 * u_turn_count - 0.03 * poison + victory * 5
 
 def avanzar(mapa, n = 20, 
            max_pop = 100, min_pop = 10,

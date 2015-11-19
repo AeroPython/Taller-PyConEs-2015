@@ -1,2 +1,2 @@
 
-from._laberinto import *
+#from._laberinto import *
