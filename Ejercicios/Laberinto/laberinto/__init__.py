@@ -1,0 +1,2 @@
+
+#from._laberinto import *
