@@ -50,8 +50,7 @@ def calculate_traits (individual, dict_genes):
     index = 0
     
     for trait in dict_genes:
-        step = 12 / (int(dict_genes[trait]*'1',2))
-        dict_traits[trait] = step*int(''.join(str(bit) for bit in individual.genome[index : index+dict_genes[trait]]), 2)
+        dict_traits[trait] = int(''.join(str(bit) for bit in individual.genome[index : index+dict_genes[trait]]), 2)
         index += dict_genes[trait]
         
     individual.traits = dict_traits
@@ -59,11 +58,13 @@ def calculate_traits (individual, dict_genes):
 
 
 
-def immigration (society, target_population, dict_genes):
+def immigration (society, target_population,
+                 calculate_performances, calculate_fitness, 
+                 dict_genes, Object = Individual, *args):
     
     while len(society) < target_population:
         
-        new_individual = Individual (generate_genome (dict_genes))
+        new_individual = Object (generate_genome (dict_genes), args)
         calculate_traits (new_individual, dict_genes)
         calculate_performances (new_individual)
         calculate_fitness (new_individual)
@@ -74,7 +75,9 @@ def immigration (society, target_population, dict_genes):
 
 
 
-def crossover (society, reproduction_rate, mutation_rate):
+def crossover (society, reproduction_rate, mutation_rate,
+               calculate_performances, calculate_fitness, 
+               dict_genes, Object = Individual, *args):
     
     #First we create a list with the fitness values of every individual in the society
     fitness_list = [individual.fitness for individual in society]
@@ -111,7 +114,7 @@ def crossover (society, reproduction_rate, mutation_rate):
         mutant_child_genome = [abs(n[i] -  child_genome[i]) for i in range(len(child_genome))]
         
         #We finally append the newborn individual to the society
-        newborn = Individual(mutant_child_genome)
+        newborn = Object(mutant_child_genome, args)
         calculate_traits (newborn, dict_genes)
         calculate_performances (newborn)
         calculate_fitness (newborn)
@@ -124,10 +127,11 @@ def tournament(society, target_population):
     while len(society) > target_population:
         
         #index1, index2 = random.randrange(0, len(society)), random.randrange(0, len(society))
+        
         #if society[index1].fitness > society[index2].fitness:
         #    society.pop(index2)
         #else:
         #    society.pop(index1)
-                
+            
         fitness_list = [individual.fitness for individual in society]
         society.pop(fitness_list.index(min(fitness_list)))
