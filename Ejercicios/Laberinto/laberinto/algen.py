@@ -1,3 +1,21 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Ejercicio del Laberinto
+
+Taller de la PyConEs 2015: Simplifica tu vida con sistemas complejos y algoritmos genéticos
+
+Este script contiene las funciones y clases necesarias para el algoritmo genético del
+ejercicio del laberinto.
+
+
+Este script usa arrays de numpy, aunque no debería ser difícil para alguien con experiencia
+sustituírlos por otras estructuras si es necesario.
+
+También usa la librería Matplotlib en las funciones que dibujan resultados."""
+
+
+
 import random as random
 
 
